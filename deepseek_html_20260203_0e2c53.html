@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success Personality Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --accent: #ff9f1c;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --gray: #6c757d;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .symbols {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .symbol {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .symbol:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+        .symbol:nth-child(3) {
+            animation-delay: 1s;
+        }
+        .symbol:nth-child(4) {
+            animation-delay: 1.5s;
+        }
+        .symbol:nth-child(5) {
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .quiz-section, .result-section {
+            display: none;
+        }
+
+        .active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .intro-section.active {
+            display: block;
+            text-align: center;
+        }
+
+        .intro-section h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .intro-section p {
+            color: var(--dark);
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .start-btn {
+            background: linear-gradient(to right, var(--accent), #ff7b00);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 159, 28, 0.3);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 159, 28, 0.4);
+        }
+
+        .question {
+            margin-bottom: 30px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .question h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-number {
+            background-color: var(--accent);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            background-color: #f8f9fa;
+            border-color: var(--primary);
+        }
+
+        .option.selected {
+            background-color: rgba(74, 111, 165, 0.1);
+            border-color: var(--primary);
+        }
+
+        .option-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-icon {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            background-color: #adb5bd;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent), #ff7b00);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .result-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            animation: popIn 0.8s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .result-title {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .result-subtitle {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .result-percentage {
+            display: inline-block;
+            background-color: rgba(255, 159, 28, 0.2);
+            color: var(--accent);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .result-description {
+            text-align: left;
+            line-height: 1.7;
+            color: var(--dark);
+            margin-bottom: 25px;
+        }
+
+        .result-stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .stat {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 150px;
+        }
+
+        .stat i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .stat h4 {
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(74, 111, 165, 0.3);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 25px;
+            }
+            
+            .result-stats {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-trophy"></i> Success Personality Quiz</h1>
+            <p>Discover your unique approach to success and how you handle stress in different areas of life</p>
+            <div class="symbols">
+                <div class="symbol"><i class="fas fa-graduation-cap"></i></div>
+                <div class="symbol"><i class="fas fa-bullseye"></i></div>
+                <div class="symbol"><i class="fas fa-users"></i></div>
+                <div class="symbol"><i class="fas fa-chart-line"></i></div>
+                <div class="symbol"><i class="fas fa-heart"></i></div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- Intro Section -->
+            <div class="intro-section active">
+                <h2>What's Your Success Archetype?</h2>
+                <p>This quiz explores how your upbringing, personality, and stress management style shape your definition of success. You'll answer 10 questions about how you handle pressure from society, school, personal goals, family, and social media.</p>
+                <p>At the end, you'll discover which of the 5 success archetypes you align with, complete with a detailed explanation and global statistics.</p>
+                <button class="start-btn" id="start-btn">Start Quiz <i class="fas fa-play"></i></button>
+            </div>
+            
+            <!-- Quiz Section -->
+            <div class="quiz-section" id="quiz-section">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span>Question <span id="current-q">1</span>/10</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                </div>
+                
+                <div id="questions-container">
+                    <!-- Questions will be inserted here by JavaScript -->
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-btn" id="prev-btn" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+                    <button class="nav-btn" id="next-btn">Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="result-section" id="result-section">
+                <div id="result-content">
+                    <!-- Result will be inserted here by JavaScript -->
+                </div>
+                <button class="restart-btn" id="restart-btn"><i class="fas fa-redo"></i> Take Quiz Again</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Success Personality Quiz | Explore how your personality shapes your approach to success and stress</p>
+        </div>
+    </div>
+
+    <script>
+        // Quiz questions and answers
+        const questions = [
+            {
+                question: "When facing a major deadline at work or school, how do you typically respond?",
+                options: [
+                    "I create a detailed plan and follow it step by step",
+                    "I focus on the big picture and tackle the most important parts first",
+                    "I seek support from colleagues or classmates to divide the work",
+                    "I work best under pressure and often pull all-nighters",
+                    "I feel overwhelmed and struggle to focus until the last minute"
+                ]
+            },
+            {
+                question: "How would you describe your upbringing in relation to achievement expectations?",
+                options: [
+                    "My family emphasized excellence and set high standards",
+                    "My family encouraged me to find my own path to success",
+                    "Success was defined by helping others and community contribution",
+                    "I had to prove myself and often felt pressure to outperform others",
+                    "Achievement wasn't emphasized; happiness and balance were more important"
+                ]
+            },
+            {
+                question: "When you encounter failure or setback, what's your immediate reaction?",
+                options: [
+                    "Analyze what went wrong and create a new strategy",
+                    "Take a step back and reassess if this goal is still worth pursuing",
+                    "Reach out to mentors or friends for advice and emotional support",
+                    "Double down and work even harder to overcome the obstacle",
+                    "Feel discouraged and question my abilities"
+                ]
+            },
+            {
+                question: "How do you typically handle stress from social comparison (e.g., seeing others' achievements on social media)?",
+                options: [
+                    "I use it as motivation to improve my own performance",
+                    "I remind myself that everyone's journey is different",
+                    "I limit my social media consumption to avoid these feelings",
+                    "I feel anxious but try to channel it into productive action",
+                    "It significantly affects my self-esteem and mood"
+                ]
+            },
+            {
+                question: "What role do personal goals play in your definition of success?",
+                options: [
+                    "Achieving specific, measurable goals is central to my success",
+                    "Success is about the journey and personal growth, not just goals",
+                    "Success means balancing personal goals with relationships",
+                    "I need to achieve more than others to feel successful",
+                    "I struggle to set or maintain personal goals consistently"
+                ]
+            },
+            {
+                question: "In a high-pressure team environment, how do you contribute?",
+                options: [
+                    "I take charge and organize our approach systematically",
+                    "I focus on innovative solutions to complex problems",
+                    "I ensure team morale stays positive and everyone feels heard",
+                    "I push myself and others to meet demanding standards",
+                    "I often feel overwhelmed and may withdraw from the group"
+                ]
+            },
+            {
+                question: "How does your personality influence how you handle stress?",
+                options: [
+                    "I'm naturally organized, which helps me manage stress proactively",
+                    "I'm adaptable and can pivot when faced with obstacles",
+                    "I'm empathetic, which helps me seek and give support during stress",
+                    "I'm highly driven, which helps me push through stressful periods",
+                    "I'm sensitive, which means stress affects me deeply"
+                ]
+            },
+            {
+                question: "What's your approach to balancing ambition with personal well-being?",
+                options: [
+                    "I schedule both work and self-care with equal importance",
+                    "I pursue ambitious goals but listen to my needs along the way",
+                    "I prioritize relationships and health over relentless ambition",
+                    "I tend to sacrifice well-being temporarily for major goals",
+                    "I struggle to be ambitious without compromising my well-being"
+                ]
+            },
+            {
+                question: "How do you view success in relation to societal expectations?",
+                options: [
+                    "I meet societal expectations but define success on my own terms",
+                    "I challenge conventional success metrics and create my own",
+                    "I believe success should benefit both the individual and community",
+                    "I feel pressured to meet and exceed societal expectations",
+                    "I often feel conflicted between societal expectations and my own desires"
+                ]
+            },
+            {
+                question: "When facing multiple stressors from different life areas (work, family, personal), how do you cope?",
+                options: [
+                    "I prioritize and address each stressor systematically",
+                    "I step back to gain perspective on what truly matters",
+                    "I rely on my support network to help manage the load",
+                    "I push through with determination and extra effort",
+                    "I feel paralyzed and struggle to address any effectively"
+                ]
+            }
+        ];
+
+        // Results data
+        const results = [
+            {
+                id: 1,
+                title: "The Strategic Achiever",
+                subtitle: "Planned, Methodical, Goal-Oriented",
+                icon: "fas fa-chess-king",
+                percentage: "18%",
+                description: "You approach success with careful planning and systematic execution. Your upbringing likely emphasized structure and achievement, helping you develop strong organizational skills. You handle stress by breaking challenges into manageable steps and creating detailed plans. Your definition of success is tied to achieving specific, measurable goals you set for yourself. You balance societal expectations with personal standards, often exceeding both. Under pressure, you remain calm and focused, using stress as motivation rather than allowing it to overwhelm you. You might struggle with flexibility when plans go awry, but your methodical nature typically helps you navigate obstacles successfully.",
+                strengths: ["Exceptional organizational skills", "Reliable under pressure", "Goal-oriented mindset"],
+                challenges: ["Can be rigid with change", "May overlook work-life balance", "High self-imposed standards"],
+                symbol: "📊"
+            },
+            {
+                id: 2,
+                title: "The Adaptive Visionary",
+                subtitle: "Innovative, Flexible, Growth-Focused",
+                icon: "fas fa-lightbulb",
+                percentage: "22%",
+                description: "You define success through personal growth and innovative contributions. Your upbringing encouraged curiosity and independent thinking. You handle stress by reframing challenges as opportunities and adapting your approach when needed. You're less concerned with conventional success metrics and more focused on meaningful impact and personal development. You balance stress from various life domains by maintaining perspective on what truly matters to you. Social comparisons affect you less because you value originality over conformity. You might struggle with maintaining focus on long-term goals when exciting new opportunities arise, but your adaptability serves you well in changing environments.",
+                strengths: ["Creative problem-solving", "Adaptability to change", "Growth mindset"],
+                challenges: ["Can lack follow-through", "May disregard useful structures", "Difficulty with routine tasks"],
+                symbol: "🌀"
+            },
+            {
+                id: 3,
+                title: "The Collaborative Harmonizer",
+                subtitle: "Empathetic, Supportive, Community-Minded",
+                icon: "fas fa-hands-helping",
+                percentage: "25%",
+                description: "You view success as a collective achievement and prioritize relationships alongside personal goals. Your upbringing emphasized community and cooperation. You handle stress by seeking support from others and offering support in return. Your definition of success includes maintaining healthy relationships and contributing positively to your community. You're skilled at managing team dynamics and fostering collaborative environments. Stress from social comparisons affects you moderately, but you typically reframe it as inspiration rather than competition. You might struggle with asserting your individual needs when they conflict with group harmony, but your interpersonal intelligence helps you navigate complex social landscapes.",
+                strengths: ["Exceptional interpersonal skills", "Team-oriented mindset", "Emotional intelligence"],
+                challenges: ["May neglect personal ambitions", "Difficulty with confrontation", "Can take on others' stress"],
+                symbol: "🤝"
+            },
+            {
+                id: 4,
+                title: "The Driven Performer",
+                subtitle: "Ambitious, Resilient, Results-Focused",
+                icon: "fas fa-bolt",
+                percentage: "20%",
+                description: "You pursue success with intense determination and measure it through tangible achievements. Your upbringing may have included performance expectations or competitive elements. You handle stress by doubling down on effort and pushing through obstacles with sheer willpower. Your definition of success is closely tied to outperforming benchmarks and exceeding expectations. You thrive under pressure and often do your best work with tight deadlines. Social comparisons can motivate you but may also contribute to anxiety if you feel you're falling behind. You might struggle with work-life balance and risk burnout, but your resilience helps you recover from setbacks quickly.",
+                strengths: ["High resilience", "Strong work ethic", "Performance under pressure"],
+                challenges: ["Risk of burnout", "May overlook relationships", "Can be overly competitive"],
+                symbol: "⚡"
+            },
+            {
+                id: 5,
+                title: "The Reflective Seeker",
+                subtitle: "Sensitive, Introspective, Meaning-Oriented",
+                icon: "fas fa-compass",
+                percentage: "15%",
+                description: "You approach success as an internal journey of self-discovery and authenticity. Your upbringing may have encouraged introspection or exposed you to diverse value systems. You handle stress by seeking meaning in challenges and withdrawing periodically to process emotions. Your definition of success prioritizes personal alignment and authenticity over external validation. Multiple stressors from different life domains can overwhelm you, requiring intentional recovery time. Social comparisons significantly impact you, often triggering deep reflection on your values and path. You might struggle with consistent action toward goals when feeling conflicted internally, but your depth of understanding provides rich insight into human motivation.",
+                strengths: ["Deep self-awareness", "Authenticity in pursuits", "Meaning-focused approach"],
+                challenges: ["Can become paralyzed by analysis", "Sensitive to external pressures", "Difficulty with consistent execution"],
+                symbol: "🌱"
+            }
+        ];
+
+        // DOM elements
+        const startBtn = document.getElementById('start-btn');
+        const quizSection = document.getElementById('quiz-section');
+        const introSection = document.querySelector('.intro-section');
+        const resultSection = document.getElementById('result-section');
+        const questionsContainer = document.getElementById('questions-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress');
+        const currentQSpan = document.getElementById('current-q');
+        const progressPercent = document.getElementById('progress-percent');
+        const restartBtn = document.getElementById('restart-btn');
+        const resultContent = document.getElementById('result-content');
+
+        // Quiz state
+        let currentQuestion = 0;
+        let answers = [];
+        let resultId = 0;
+
+        // Initialize quiz
+        function initQuiz() {
+            currentQuestion = 0;
+            answers = [];
+            resultId = 0;
+            
+            // Hide intro and result, show quiz
+            introSection.classList.remove('active');
+            resultSection.classList.remove('active');
+            quizSection.classList.add('active');
+            
+            // Render first question
+            renderQuestion();
+            updateNavigation();
+            updateProgress();
+        }
+
+        // Render current question
+        function renderQuestion() {
+            const question = questions[currentQuestion];
+            
+            let optionsHTML = '';
+            question.options.forEach((option, index) => {
+                const isSelected = answers[currentQuestion] === index;
+                optionsHTML += `
+                    <div class="option ${isSelected ? 'selected' : ''}" data-index="${index}">
+                        <div class="option-icon">${String.fromCharCode(65 + index)}</div>
+                        <div class="option-text">${option}</div>
+                    </div>
+                `;
+            });
+            
+            questionsContainer.innerHTML = `
+                <div class="question">
+                    <h3><span class="question-number">${currentQuestion + 1}</span> ${question.question}</h3>
+                    <div class="options">${optionsHTML}</div>
+                </div>
+            `;
+            
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', () => {
+                    const selectedIndex = parseInt(option.getAttribute('data-index'));
+                    answers[currentQuestion] = selectedIndex;
+                    
+                    // Update UI
+                    document.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    option.classList.add('selected');
+                    
+                    // Enable next button
+                    nextBtn.disabled = false;
+                });
+            });
+            
+            // Update current question display
+            currentQSpan.textContent = currentQuestion + 1;
+        }
+
+        // Update navigation buttons
+        function updateNavigation() {
+            prevBtn.disabled = currentQuestion === 0;
+            
+            // Enable next button only if current question is answered
+            nextBtn.disabled = answers[currentQuestion] === undefined;
+            
+            // Change next button text on last question
+            if (currentQuestion === questions.length - 1) {
+                nextBtn.innerHTML = 'See Results <i class="fas fa-chart-bar"></i>';
+            } else {
+                nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
+            }
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressPercent.textContent = `${Math.round(progress)}%`;
+        }
+
+        // Calculate result based on answers
+        function calculateResult() {
+            // Simple scoring: each answer corresponds to a result type
+            // Answers 0-4 map to results 1-5 respectively
+            const resultCounts = [0, 0, 0, 0, 0];
+            
+            answers.forEach(answer => {
+                if (answer >= 0 && answer <= 4) {
+                    resultCounts[answer]++;
+                }
+            });
+            
+            // Find the most frequent answer type
+            let maxCount = 0;
+            let maxIndex = 0;
+            
+            resultCounts.forEach((count, index) => {
+                if (count > maxCount) {
+                    maxCount = count;
+                    maxIndex = index;
+                }
+            });
+            
+            // Return result ID (1-5)
+            return maxIndex + 1;
+        }
+
+        // Display result
+        function showResult() {
+            resultId = calculateResult();
+            const result = results.find(r => r.id === resultId);
+            
+            // Hide quiz, show result
+            quizSection.classList.remove('active');
+            resultSection.classList.add('active');
+            
+            // Create stats HTML
+            let statsHTML = '';
+            result.strengths.forEach((strength, index) => {
+                const icons = ['fa-check-circle', 'fa-star', 'fa-award', 'fa-rocket'];
+                statsHTML += `
+                    <div class="stat">
+                        <i class="fas ${icons[index]}"></i>
+                        <h4>Strength</h4>
+                        <p>${strength}</p>
+                    </div>
+                `;
+            });
+            
+            result.challenges.forEach((challenge, index) => {
+                const icons = ['fa-exclamation-triangle', 'fa-balance-scale', 'fa-hourglass-half', 'fa-mountain'];
+                statsHTML += `
+                    <div class="stat">
+                        <i class="fas ${icons[index]}"></i>
+                        <h4>Challenge</h4>
+                        <p>${challenge}</p>
+                    </div>
+                `;
+            });
+            
+            // Create result HTML
+            resultContent.innerHTML = `
+                <div class="result-card">
+                    <div class="result-icon">
+                        ${result.symbol} <i class="${result.icon}"></i>
+                    </div>
+                    <h2 class="result-title">${result.title}</h2>
+                    <h3 class="result-subtitle">${result.subtitle}</h3>
+                    <div class="result-percentage">${result.percentage} of people share this archetype</div>
+                    <div class="result-description">
+                        <p>${result.description}</p>
+                    </div>
+                    <div class="result-stats">
+                        ${statsHTML}
+                    </div>
+                </div>
+            `;
+            
+            // Scroll to top of result
+            window.scrollTo(0, 0);
+        }
+
+        // Event listeners
+        startBtn.addEventListener('click', initQuiz);
+
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+                updateNavigation();
+                updateProgress();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+                updateNavigation();
+                updateProgress();
+            } else {
+                // Last question - show results
+                showResult();
+            }
+        });
+
+        restartBtn.addEventListener('click', initQuiz);
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Start with intro section active
+            introSection.classList.add('active');
+        });
+    </script>
+</body>
+</html>
